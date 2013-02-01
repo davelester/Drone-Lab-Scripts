@@ -9,7 +9,7 @@ if it moves outside of that range.
 */
 client.on('navdata', function(navdata) {
 	if (!navdata.demo) {return; }
-	if (navdata.demo.altitudeMeters > 3) {
+	if (navdata.demo.altitudeMeters > 2) {
 		console.log('maxed out, going down', navdata.demo.altitudeMeters);
 		client.down(0.5);
 		client.after(1000, function() {
@@ -22,8 +22,8 @@ client.on('navdata', function(navdata) {
 				client.stop();
 			});			
 	} else {
-		client.up(0.5);
-		client.after(1000, function() {
+		console.log('level: ', navdata.demo.altitudeMeters);
+		client.after(250, function() {
 			client.stop();
 		});					
 	}
@@ -46,7 +46,7 @@ client.after(2000, function() {
 			'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
 			];
 			animations.forEach(function(anim) {
-				client.after(3000, function() {
+				client.after(500, function() {
 						console.log(anim);
 						client.animate(anim, 2000);
 			  });
