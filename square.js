@@ -1,10 +1,10 @@
 var arDrone = require('ar-drone');
-var client  = arDrone.createClient();
+var drone  = arDrone.createdrone();
 
-client.takeoff();
+drone.takeoff();
 
 // Drone flies in a square
-client
+drone
   .after(5000, function() {
     this.clockwise(0.5);
   })
@@ -39,4 +39,3 @@ client
   .after(1000, function() {
     this.land();
   });
-
