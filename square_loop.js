@@ -1,9 +1,10 @@
 /*
 Supplies access to nav data
-Flies the quadcopter within a range of 1 to 2 meters. Correct its altitude
-if it moves outside of that range.
+* Flies the quadcopter within a range of 1 to 2 meters. Correct its altitude
+  if it moves outside of that range.
+* Flies in a square 5 times
 
-Sample Data:
+Sample Data for reference:
 { header: 1432778632,
   droneState: 
    { flying: 0,
@@ -86,7 +87,7 @@ Sample Data:
 var data, counter;
 var displayPage = [];
 var arDrone = require('ar-drone');
-var client = arDrone.createClient();
+var drone = arDrone.createClient();
 var animations = [
   // 'phiM30Deg', 'phi30Deg', 'thetaM30Deg', 'theta30Deg', 'theta20degYaw200deg',
   // 'theta20degYawM200deg', 'turnaround', 'turnaroundGodown', 
@@ -94,14 +95,14 @@ var animations = [
   'wave', 'phiThetaMixed',
   // 'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
 ];
-
+//pushing new lines the size of my terminal. This way, each item is on its own line
 for(var i = 0; i < 35; i++){
   displayPage.push('\n');
 }
 displayPage[34] = 'Animation: None';
 
-client.config('general:navdata_demo', 'TRUE');
-client.on('navdata', function(navdata) {
+drone.config('general:navdata_demo', 'TRUE');
+drone.on('navdata', function(navdata) {
   data = navdata;
   if (!navdata.demo) {
     console.log('Fail...')
@@ -117,16 +118,16 @@ client.on('navdata', function(navdata) {
 
   if (navdata.demo.altitudeMeters > 2) {
     displayPage[32] = 'maxed out, going down ' + navdata.demo.altitudeMeters;
-    client.down(0.5);
-    client.after(500, function() {
-      client.stop();
+    drone.down(0.5);
+    drone.after(500, function() {
+      drone.stop();
     });
   } 
   else if (navdata.demo.altitudeMeters < 1) {
     displayPage[32] = 'going up ' + navdata.demo.altitudeMeters;
-    client.up(0.5);
-    client.after(500, function() {
-      client.stop();
+    drone.up(0.5);
+    drone.after(500, function() {
+      drone.stop();
     });     
   } 
   else {
@@ -138,34 +139,38 @@ client.on('navdata', function(navdata) {
   });
 });
 
-client.takeoff();
+drone.takeoff();
+//counter for how many times it does the square
 counter = 0;
+//need a second counter for the while loop. Otherwise some safety kicks in and 
+//wont launch an infinite 'while'. Trying to have the counter trigger the while
+//is also considered an infitire 'while' aparently. 
 var i = 0;
 displayPage[28] = 'stop';
 while(i < 11){
-  client
+  drone
     .after(2000, function() { 
       displayPage[15] = "counter: " + counter;
       displayPage[28] = 'front';
-      client.front(0.1);
+      drone.front(0.1);
     })
     .after(2000,function(){
-      client.stop();
+      drone.stop();
       displayPage[28] = 'right';
-      client.right(0.1);
+      drone.right(0.1);
     })
     .after(2000,function(){
-      client.stop();
+      drone.stop();
       displayPage[28] = 'back';
-      client.back(0.1);
+      drone.back(0.1);
     })
     .after(2000,function(){
-      client.stop();
+      drone.stop();
       displayPage[28] = 'left';
-      client.left(0.1);
+      drone.left(0.1);
     })
     .after(2000,function(){
-      client.stop();
+      drone.stop();
       displayPage[28] = 'stop';
     })
     .after(2000, function() {

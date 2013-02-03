@@ -46,7 +46,8 @@ client.after(2000, function() {
 			'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
 			];
 			animations.forEach(function(anim) {
-				client.after(500, function() {
+				//I think the .after time needs to match the animate time or else it cuts it short? 
+				client.after(2000, function() {
 						console.log(anim);
 						client.animate(anim, 2000);
 			  });
